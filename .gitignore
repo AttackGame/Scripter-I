@@ -1,41 +1,54 @@
-# Compiled Lua sources
-luac.out
+------- Variables -------
+----- UI -----
+local Btn = script.Parent.Btn
+local MainFrame = script.Parent.Main
+----- Scale -----
+local Scale = Btn.UIScale
+----- Services -----
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
+----- Infos -----
+local TS = TweenInfo.new(0.2, Enum.EasingStyle.Circular)
 
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
+----- Lighting -----
+local Blur = Lighting.BlurUI
 
-# Precompiled Headers
-*.gch
-*.pch
+----- Others -----
+local Open = true
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
+------- Code -------
+----- Buttons Settings -----
+Btn.MouseEnter:Connect(function()
+	TweenService:Create(Scale, TS, {Scale = 1.2}):Play() -- Augmente
+	TweenService:Create(Btn, TS, {TextColor3 = Color3.new(1, 1, 1)}):Play() -- Le texte devient blanc
+	TweenService:Create(Btn, TS, {BackgroundColor3 = Color3.new(0, 0, 0)}):Play() -- Le background devient noir
+end)
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+Btn.MouseLeave:Connect(function()
+	TweenService:Create(Scale, TS, {Scale = 1}):Play() -- Taille Normal
+	TweenService:Create(Btn, TS, {TextColor3 = Color3.new(0, 0, 0)}):Play() -- Le texte devient noir
+	TweenService:Create(Btn, TS, {BackgroundColor3 = Color3.new(1, 1, 1)}):Play() -- Le background devient blanc
+end)
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+Btn.MouseButton1Down:Connect(function()
+	TweenService:Create(Scale, TS, {Scale = 0.7}):Play() -- Diminue
+end)
 
+Btn.MouseButton1Up:Connect(function()
+	TweenService:Create(Scale, TS, {Scale = 1.2}):Play() -- Augmente
+end)
+
+----- Frame Script -----
+Btn.MouseButton1Click:Connect(function()
+	if Open then
+		TweenService:Create(Blur, TS, {Size = 24}):Play() -- Flouter
+		TweenService:Create(MainFrame, TS, {Position = UDim2.new(0.24, 0,0.125, 0)}):Play() -- Monte
+		TweenService:Create(MainFrame, TS, {Size = UDim2.new(0.52, 0,0.75, 0)}):Play() -- Grand
+	else
+		TweenService:Create(Blur, TS, {Size = 0}):Play() -- Déflouter
+		TweenService:Create(MainFrame, TS, {Position = UDim2.new(0.492, 0,1, 0)}):Play() -- Descend
+		TweenService:Create(MainFrame, TS, {Size = UDim2.new(0.016, 0,0.014, 0)}):Play() -- Petit
+	end
+	Open = not Open
+end)
